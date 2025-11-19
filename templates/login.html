@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <title>Login - Kementerian Perdesaan</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Times New Roman", Times, serif;
+
+      /* ====== BACKGROUND GAMBAR PERDESAAN ====== */
+      background-color: #000000; /* warna belakang untuk area kosong */
+      background-image: url("{{ url_for('static', filename='bg-perdesaan.png') }}");
+      background-repeat: no-repeat;
+      background-position: center center;
+      background-size: cover;      /* atau contain kalau mau benar2 utuh */
+      background-attachment: fixed;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    /* ====== TEKS OVERLAY DI ATAS GAMBAR ====== */
+    .overlay-title {
+      position: fixed;
+      top: 20px;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      pointer-events: none;   /* biar tidak menghalangi klik ke form */
+
+      color: #f5e6b5;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.7);
+      font-weight: 900;
+      letter-spacing: 6px;
+      text-transform: uppercase;
+    }
+
+    .overlay-title-line1 {
+      font-size: 28px;
+    }
+
+    .overlay-title-line2 {
+      font-size: 18px;
+      margin-top: 4px;
+    }
+
+    /* ====== KARTU LOGIN ====== */
+    .login-card {
+      background-color: rgba(255, 255, 255, 0.726);
+      padding: 25px 30px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+      width: 320px;
+    }
+
+    .login-title {
+      text-align: center;
+      margin-bottom: 20px;
+      font-weight: bold;
+      letter-spacing: 3px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 14px;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: 7px 8px;
+      border-radius: 4px;
+      border: 1px solid #999;
+      font-family: inherit;
+      font-size: 14px;
+      margin-bottom: 12px;
+      background-color: #ffffff;
+    }
+
+    .btn-login {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 4px;
+      border: none;
+      background-color: #0b4f59;
+      color: #ffffff;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .btn-login:hover {
+      background-color: #145b66;
+    }
+
+    .error {
+      margin-top: 10px;
+      color: #b71c1c;
+      font-size: 13px;
+      text-align: center;
+    }
+
+    .hint {
+      margin-top: 10px;
+      font-size: 12px;
+      color: #f0f0f0;
+      text-align: center;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TEKS OVERLAY DI ATAS -->
+  <div class="overlay-title">
+    <div class="overlay-title-line1">KEMENTERIAN PERDESAAN</div>
+    <div class="overlay-title-line2">REPUBLIK INDONESIA</div>
+  </div>
+
+  <!-- KARTU LOGIN -->
+  <div class="login-card">
+    <div class="login-title">LOGIN</div>
+
+    <form method="post" action="{{ url_for('login') }}">
+      <label for="username">Username</label>
+      <input
+        type="text"
+        id="username"
+        name="username"
+        required
+        autocomplete="off"
+      />
+
+      <label for="password">Password</label>
+      <input
+        type="password"
+        id="password"
+        name="password"
+        required
+      />
+
+      <button type="submit" class="btn-login">Masuk</button>
+    </form>
+
+    {% if error %}
+      <div class="error">{{ error }}</div>
+    {% endif %}
+
+    <div class="hint">
+      Username &amp; password demo: <b>admin / admin</b>
+    </div>
+  </div>
+
+</body>
+</html>
