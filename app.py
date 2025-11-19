@@ -15,6 +15,7 @@ import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 app = Flask(__name__)
+app.secret_key = "divisipe"
 
 GSHEET_ID = "1hzP9wBwfVv-K3SaD9PeES4lsseSf62-NKdG_nXWEj5I"
 
