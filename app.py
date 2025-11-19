@@ -12,7 +12,6 @@ import pandas as pd
 import requests
 import urllib3
 
-# Matikan warning SSL karena kita pakai verify=False (workaround SSL)
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 app = Flask(__name__)
