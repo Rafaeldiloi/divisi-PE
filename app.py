@@ -17,7 +17,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 app = Flask(__name__)
 app.secret_key = "divisipe"
 
-GSHEET_ID = "1hzP9wBwfVv-K3SaD9PeES4lsseSf62-NKdG_nXWEj5I"
+GSHEET_ID = "1nhRWHZLfxrVnPWoKRlniUdwyoJHAc7FoJf8-cRF3oUs"
 
 GSHEET_XLSX_URL = (
     f"https://docs.google.com/spreadsheets/d/{GSHEET_ID}/export?format=xlsx"
@@ -26,8 +26,6 @@ GSHEET_XLSX_URL = (
 EXCEL_FILE = "/tmp/data_local.xlsx"
 
 def download_excel_from_gsheet():
-    print(">> Mencoba mengunduh Google Sheets terbaru ...")
-
     try:
         resp = requests.get(GSHEET_XLSX_URL, verify=False, timeout=30)
         resp.raise_for_status()
@@ -100,7 +98,6 @@ def home():
         columns, data, sheets, active_sheet = read_excel_sheet(sheet)
         download_error = None
     except Exception as e:
-        # Kalau benar-benar gagal dapat data
         columns, data, sheets, active_sheet = [], [], [], None
         download_error = str(e)
 
