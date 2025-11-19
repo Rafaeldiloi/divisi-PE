@@ -23,7 +23,7 @@ GSHEET_XLSX_URL = (
     f"https://docs.google.com/spreadsheets/d/{GSHEET_ID}/export?format=xlsx"
 )
 
-EXCEL_FILE = "data_local.xlsx"
+EXCEL_FILE = "/tmp/data_local.xlsx"
 
 def download_excel_from_gsheet():
     print(">> Mencoba mengunduh Google Sheets terbaru ...")
