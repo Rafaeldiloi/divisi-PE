@@ -71,10 +71,6 @@
       font-size: 13px;
     }
 
-    .user-label {
-      font-style: italic;
-    }
-
     .btn-logout {
       padding: 5px 10px;
       border-radius: 4px;
@@ -189,9 +185,7 @@
     </div>
 
     <div class="top-right">
-      <span class="user-label">
-        User: {{ session.get('user') or 'Tidak diketahui' }}
-      </span>
+      <!-- Hapus bagian "User: admin" -->
       <form method="get" action="{{ url_for('logout') }}" style="margin:0;">
         <button type="submit" class="btn-logout">Logout</button>
       </form>

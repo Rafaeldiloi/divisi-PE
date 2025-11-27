@@ -1,5 +1,5 @@
-Flask
-pandas
-requests
-urllib3
-openpyxl
+Flask==2.1.1
+pandas==1.4.2
+requests==2.27.1
+urllib3==1.26.9
+gunicorn==20.1.0

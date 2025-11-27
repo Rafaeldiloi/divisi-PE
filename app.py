@@ -23,6 +23,7 @@ GSHEET_XLSX_URL = (
     f"https://docs.google.com/spreadsheets/d/{GSHEET_ID}/export?format=xlsx"
 )
 
+# Gantilah lokasi file ke /tmp yang dapat digunakan di Vercel
 EXCEL_FILE = "/tmp/data_local.xlsx"
 
 def download_excel_from_gsheet():
@@ -35,7 +36,6 @@ def download_excel_from_gsheet():
     except requests.exceptions.RequestException as e:
         if not os.path.exists(EXCEL_FILE):
             raise
-
 
 def read_excel_sheet(sheet_name=None):
     download_excel_from_gsheet()
@@ -63,7 +63,6 @@ def root():
         return redirect(url_for("home"))
     return redirect(url_for("login"))
 
-
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
@@ -80,12 +79,10 @@ def login():
 
     return render_template("login.html")
 
-
 @app.route("/logout")
 def logout():
     session.clear()
     return redirect(url_for("login"))
-
 
 @app.route("/home")
 def home():
@@ -109,7 +106,6 @@ def home():
         active_sheet=active_sheet,
         download_error=download_error,
     )
-
 
 @app.route("/save", methods=["POST"])
 def save():
