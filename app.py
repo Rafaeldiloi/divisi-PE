@@ -1,3 +1,15 @@
+import os
+import urllib3
+import requests
+import pandas as pd
+
+import werkzeug
+import werkzeug.urls
+from urllib.parse import quote as _url_quote
+
+if not hasattr(werkzeug.urls, "url_quote"):
+    werkzeug.urls.url_quote = _url_quote
+
 from flask import (
     Flask,
     render_template,
@@ -5,12 +17,8 @@ from flask import (
     redirect,
     url_for,
     session,
-    jsonify
+    jsonify,
 )
-import os
-import pandas as pd
-import requests
-import urllib3
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -18,12 +26,8 @@ app = Flask(__name__)
 app.secret_key = "divisipe"
 
 GSHEET_ID = "1nhRWHZLfxrVnPWoKRlniUdwyoJHAc7FoJf8-cRF3oUs"
+GSHEET_XLSX_URL = f"https://docs.google.com/spreadsheets/d/{GSHEET_ID}/export?format=xlsx"
 
-GSHEET_XLSX_URL = (
-    f"https://docs.google.com/spreadsheets/d/{GSHEET_ID}/export?format=xlsx"
-)
-
-# Kalau di Vercel (ENV VERCEL ada) pakai /tmp, kalau lokal pakai folder app.py
 if os.getenv("VERCEL"):
     EXCEL_FILE = "/tmp/data_local.xlsx"
 else:
@@ -31,16 +35,16 @@ else:
     EXCEL_FILE = os.path.join(BASE_DIR, "data_local.xlsx")
 
 
-def download_excel_from_gsheet():
+def download_excel_from_gsheet() -> None:
     try:
         resp = requests.get(GSHEET_XLSX_URL, verify=False, timeout=30)
         resp.raise_for_status()
-
         with open(EXCEL_FILE, "wb") as f:
             f.write(resp.content)
     except requests.exceptions.RequestException as e:
         if not os.path.exists(EXCEL_FILE):
-            raise
+            raise RuntimeError(f"Gagal mengunduh data dari Google Sheets: {e}") from e
+
 
 def read_excel_sheet(sheet_name=None):
     download_excel_from_gsheet()
@@ -50,17 +54,21 @@ def read_excel_sheet(sheet_name=None):
             f"Tidak ada file {EXCEL_FILE} dan tidak bisa download dari Google Sheets."
         )
 
-    xls = pd.ExcelFile(EXCEL_FILE)
+    xls = pd.ExcelFile(EXCEL_FILE, engine="openpyxl")
     sheet_names = xls.sheet_names
 
     if sheet_name not in sheet_names:
         sheet_name = sheet_names[0]
 
-    df = pd.read_excel(EXCEL_FILE, sheet_name=sheet_name, dtype=str).fillna("")
+    df = pd.read_excel(
+        EXCEL_FILE, sheet_name=sheet_name, dtype=str, engine="openpyxl"
+    ).fillna("")
+
     columns = list(df.columns)
     data = df.values.tolist()
 
     return columns, data, sheet_names, sheet_name
+
 
 @app.route("/")
 def root():
@@ -68,13 +76,13 @@ def root():
         return redirect(url_for("home"))
     return redirect(url_for("login"))
 
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
         username = request.form.get("username", "")
         password = request.form.get("password", "")
 
-        # Login sederhana 
         if username == "admin" and password == "admin":
             session["user"] = username
             return redirect(url_for("home"))
@@ -84,10 +92,12 @@ def login():
 
     return render_template("login.html")
 
+
 @app.route("/logout")
 def logout():
     session.clear()
     return redirect(url_for("login"))
+
 
 @app.route("/home")
 def home():
@@ -112,17 +122,22 @@ def home():
         download_error=download_error,
     )
 
+
 @app.route("/save", methods=["POST"])
 def save():
     if "user" not in session:
         return jsonify({"status": "error", "message": "Unauthorized"}), 401
 
-    return jsonify(
-        {
-            "status": "error",
-            "message": "Edit data dilakukan di Google Sheets, bukan lewat web.",
-        }
-    ), 400
+    return (
+        jsonify(
+            {
+                "status": "error",
+                "message": "Edit data dilakukan di Google Sheets, bukan lewat web.",
+            }
+        ),
+        400,
+    )
+
 
 if __name__ == "__main__":
     app.run(debug=True)
