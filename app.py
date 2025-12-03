@@ -23,8 +23,13 @@ GSHEET_XLSX_URL = (
     f"https://docs.google.com/spreadsheets/d/{GSHEET_ID}/export?format=xlsx"
 )
 
-# Gantilah lokasi file ke /tmp yang dapat digunakan di Vercel
-EXCEL_FILE = "/tmp/data_local.xlsx"
+# Kalau di Vercel (ENV VERCEL ada) pakai /tmp, kalau lokal pakai folder app.py
+if os.getenv("VERCEL"):
+    EXCEL_FILE = "/tmp/data_local.xlsx"
+else:
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    EXCEL_FILE = os.path.join(BASE_DIR, "data_local.xlsx")
+
 
 def download_excel_from_gsheet():
     try:
@@ -69,7 +74,7 @@ def login():
         username = request.form.get("username", "")
         password = request.form.get("password", "")
 
-        # Login sederhana (bisa kamu ganti nanti)
+        # Login sederhana 
         if username == "admin" and password == "admin":
             session["user"] = username
             return redirect(url_for("home"))
