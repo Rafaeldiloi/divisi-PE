@@ -2,7 +2,6 @@ import os
 import urllib3
 import requests
 import pandas as pd
-
 import werkzeug
 import werkzeug.urls
 from urllib.parse import quote as _url_quote
@@ -35,7 +34,7 @@ else:
     EXCEL_FILE = os.path.join(BASE_DIR, "data_local.xlsx")
 
 
-def download_excel_from_gsheet() -> None:
+def download_excel_from_gsheet():
     try:
         resp = requests.get(GSHEET_XLSX_URL, verify=False, timeout=30)
         resp.raise_for_status()
